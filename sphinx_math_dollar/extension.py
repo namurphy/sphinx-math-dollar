@@ -51,7 +51,11 @@ class TransformMath(Transform):
     # to be adjusted.
     default_priority = 500
     def apply(self, **kwargs):
-        self.document.walk(MathDollarReplacer(self.document))
+        try:
+            self.document.walk(MathDollarReplacer(self.document))
+        except NotImplementedError as exc:
+            source = self.document.attributes['source']
+            warn(source + ": " +  str(exc.args[0]) + f"; skipping.")
 
 def config_inited(app, config):
     global node_blacklist, DEBUG
